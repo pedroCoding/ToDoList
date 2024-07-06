@@ -1,6 +1,9 @@
 package br.com.pedroCoding.todolist.user;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import at.favre.lib.crypto.bcrypt.BCrypt;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,10 @@ public class UserController {
             System.out.println("Já existe um usúario cadastrado com esse mesmo userName");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuário já existe");
         }
+
+        var passwordHashred = BCrypt.withDefaults().hashToString(12,userModel.getPassword().toCharArray());
+
+        userModel.setPassword(passwordHashred);
 
 
         var userCreated = this.userRepository.save(userModel);
